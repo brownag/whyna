@@ -1,0 +1,21 @@
+Package: whyna
+Title: Informative Missingness via vctrs Records
+Version: 0.0.0.9000
+Authors@R:
+    person("Andrew", "Brown", , "brown.andrewg@gmail.com", role = c("aut", "cre"))
+Description: Implements typed/informative missingness following Rubin's MCAR/MAR/MNAR framework.
+    Tracks why values are missing using a vctrs record vector with 'value' and 'type' fields.
+    Integrates cleanly with tibble, dplyr, and base R idioms.
+License: file LICENSE
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.3.3
+Suggests:
+    testthat (>= 3.0.0),
+    tibble,
+    dplyr
+Config/testthat/edition: 3
+Imports:
+    vctrs,
+    rlang,
+    methods
