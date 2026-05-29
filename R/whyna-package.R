@@ -1,4 +1,5 @@
 #' @import vctrs
+#' @import methods
 #' @keywords internal
 "_PACKAGE"
 
