@@ -19,6 +19,7 @@ library(whyna)
 # whyna: Informative Missingness via vctrs
 
 <!-- badges: start -->
+[![R-CMD-check](https://github.com/brownag/whyna/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/brownag/whyna/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
 
 **whyna** implements typed/informative missingness in R, letting you track *why* values are missing. Standard R treats all missing values as identical `NA`s, losing critical information about the missingness mechanism. This package introduces a custom vector class that stores both the observed value (or `NA`) and the reason it's missing, following Rubin's (1976) MCAR/MAR/MNAR framework.

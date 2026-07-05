@@ -4,6 +4,8 @@
 # whyna: Informative Missingness via vctrs
 
 <!-- badges: start -->
+
+[![R-CMD-check](https://github.com/brownag/whyna/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/brownag/whyna/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
 
 **whyna** implements typed/informative missingness in R, letting you
@@ -147,11 +149,6 @@ water samples:
 ``` r
 library(whyna)
 library(tibble)
-#> 
-#> Attaching package: 'tibble'
-#> The following object is masked from 'package:whyna':
-#> 
-#>     data_frame
 library(dplyr, warn.conflicts = FALSE)
 
 # Simulated water quality dataset
