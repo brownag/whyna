@@ -23,14 +23,14 @@ test_that("format displays MNAR as <NA:MNAR>", {
   expect_identical(out[2], "<NA:MNAR>")
 })
 
-test_that("vec_ptype_abbr returns inf_na", {
+test_that("vec_ptype_abbr returns typed abbreviation", {
   x <- why_na(c(1.5, 2.3), c(0L, 1L))
-  expect_identical(vctrs::vec_ptype_abbr(x), "inf_na")
+  expect_identical(vctrs::vec_ptype_abbr(x), "why_dbl")
 })
 
-test_that("vec_ptype_full returns informative_na", {
+test_that("vec_ptype_full returns typed full name", {
   x <- why_na(c(1.5, 2.3), c(0L, 1L))
-  expect_identical(vctrs::vec_ptype_full(x), "informative_na")
+  expect_identical(vctrs::vec_ptype_full(x), "informative_na<double>")
 })
 
 test_that("print output contains type abbreviation in tibble", {
@@ -38,7 +38,7 @@ test_that("print output contains type abbreviation in tibble", {
   x <- why_na(c(1.5, NA), c(0L, 1L))
   df <- tibble::tibble(val = x)
   output <- capture.output(print(df))
-  expect_true(any(grepl("inf_na", output)))
+  expect_true(any(grepl("why_dbl", output)))
 })
 
 test_that("print output shows format correctly", {

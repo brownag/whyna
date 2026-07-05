@@ -90,6 +90,30 @@ is_mnar(measurements)
 missing_reason(measurements)
 ```
 
+## Generalized Typed NA: Beyond Numeric Data
+
+**whyna** now supports any vector type, not just doubles. Here's an example with character data where sentinel codes (like "LOD" for "limit of detection") and normal values coexist:
+
+```{r typed-na-character}
+# Character example: lab measurement codes
+lab_results <- c("42.5", "LOD", "38.2", "NULL-broken", "45.1")
+measurements <- sentinel_recode(
+  lab_results,
+  map = list("LOD" = "MNAR", "NULL-broken" = "MCAR"),
+  ptype = character()
+)
+
+measurements
+missing_reason(measurements)
+```
+
+Integer example with type preservation:
+
+```{r typed-na-integer}
+counts <- why_na(c(10L, NA, 5L, NA, 8L), c(0L, 1L, 0L, 2L, 0L))
+counts  # Type is preserved: integer, not double
+```
+
 ## Realistic Case: Water Quality Monitoring
 
 Suppose you're analyzing dissolved oxygen (DO) measurements from 50 water samples:
@@ -260,7 +284,8 @@ as.double(x)
 
 ## Design Notes
 
-- **Immutability of types**: When `type != 0L`, the `value` field is always `NA_real_`.
+- **Immutability of types**: When `type != 0L`, the `value` field is always `NA` of the appropriate type (e.g., `NA_integer_` for integer vectors, `NA_character_` for character, `<NA>` for factors).
+- **Type preservation**: Input type is preserved in `why_na()`. Use the optional `ptype` argument for explicit casting.
 - **vctrs foundation**: Built on `vctrs::new_rcrd()` for integration with tidyverse (dplyr, tibble).
 - **No arithmetic**: Operations like `x + 1` return standard `NA` (not class-preserving). Types are preserved during subsetting but revert to standard NA under arithmetic operations.
 

@@ -3,7 +3,7 @@ test_that("informative_na column in tibble displays with type abbr", {
   x <- why_na(c(1.5, NA), c(0L, 1L))
   df <- tibble::tibble(val = x)
   output <- capture.output(print(df))
-  expect_true(any(grepl("inf_na", output)))
+  expect_true(any(grepl("why_dbl", output)))
 })
 
 test_that("tibble preserves informative_na class", {

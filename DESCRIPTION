@@ -1,8 +1,8 @@
 Package: whyna
 Title: Informative Missingness via vctrs Records
-Version: 0.0.0.9000
+Version: 0.1.0
 Authors@R:
-    person("Andrew", "Brown", , "brown.andrewg@gmail.com", role = c("aut", "cre"))
+    person("Andrew", "Brown", , "brown.andrewg@gmail.com", role = c("aut", "cre"), comment=c(ORCID="0000-0002-4565-533X"))
 Description: Implements typed/informative missingness following Rubin's MCAR/MAR/MNAR framework.
     Tracks why values are missing using a vctrs record vector with 'value' and 'type' fields.
     Integrates cleanly with tibble, dplyr, and base R idioms.

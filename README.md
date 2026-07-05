@@ -88,7 +88,7 @@ measurements <- why_na(
 )
 
 measurements
-#> <informative_na[5]>
+#> <informative_na<double>[5]>
 #> [1] 5.2       <NA:MCAR> 7.1       <NA:MAR>  <NA:MNAR>
 
 # Extract missingness predicates
@@ -107,6 +107,38 @@ missing_reason(measurements)
 #> Levels: Observed MCAR MAR MNAR
 ```
 
+## Generalized Typed NA: Beyond Numeric Data
+
+**whyna** now supports any vector type, not just doubles. Here’s an
+example with character data where sentinel codes (like “LOD” for “limit
+of detection”) and normal values coexist:
+
+``` r
+# Character example: lab measurement codes
+lab_results <- c("42.5", "LOD", "38.2", "NULL-broken", "45.1")
+measurements <- sentinel_recode(
+  lab_results,
+  map = list("LOD" = "MNAR", "NULL-broken" = "MCAR"),
+  ptype = character()
+)
+
+measurements
+#> <informative_na<character>[5]>
+#> [1] 42.5      <NA:MNAR> 38.2      <NA:MCAR> 45.1
+missing_reason(measurements)
+#> [1] Observed MNAR     Observed MCAR     Observed
+#> Levels: Observed MCAR MAR MNAR
+```
+
+Integer example with type preservation:
+
+``` r
+counts <- why_na(c(10L, NA, 5L, NA, 8L), c(0L, 1L, 0L, 2L, 0L))
+counts  # Type is preserved: integer, not double
+#> <informative_na<integer>[5]>
+#> [1] 10        <NA:MCAR>  5        <NA:MAR>   8
+```
+
 ## Realistic Case: Water Quality Monitoring
 
 Suppose you’re analyzing dissolved oxygen (DO) measurements from 50
@@ -115,6 +147,11 @@ water samples:
 ``` r
 library(whyna)
 library(tibble)
+#> 
+#> Attaching package: 'tibble'
+#> The following object is masked from 'package:whyna':
+#> 
+#>     data_frame
 library(dplyr, warn.conflicts = FALSE)
 
 # Simulated water quality dataset
@@ -139,18 +176,18 @@ water_data <- water_data |>
 
 water_data
 #> # A tibble: 50 × 5
-#>    site_id       do site_type  temperature    ph
-#>      <int> <inf_na> <chr>            <dbl> <dbl>
-#>  1       1 7.439524 downstream        16.1  7.21
-#>  2       2 7.769823 upstream          13.5  7.80
-#>  3       3 9.558708 upstream          14.0  6.69
-#>  4       4 8.070508 upstream          11.9  7.47
-#>  5       5 8.129288 upstream          11.8  7.76
-#>  6       6 9.715065 downstream        15.9  7.65
-#>  7       7 8.460916 downstream        16.3  7.55
-#>  8       8 6.734939 upstream          15.2  7.18
-#>  9       9 7.313147 downstream        17.8  7.08
-#> 10      10 7.554338 downstream        21.2  6.99
+#>    site_id        do site_type  temperature    ph
+#>      <int> <why_dbl> <chr>            <dbl> <dbl>
+#>  1       1  7.439524 downstream        16.1  7.21
+#>  2       2  7.769823 upstream          13.5  7.80
+#>  3       3  9.558708 upstream          14.0  6.69
+#>  4       4  8.070508 upstream          11.9  7.47
+#>  5       5  8.129288 upstream          11.8  7.76
+#>  6       6  9.715065 downstream        15.9  7.65
+#>  7       7  8.460916 downstream        16.3  7.55
+#>  8       8  6.734939 upstream          15.2  7.18
+#>  9       9  7.313147 downstream        17.8  7.08
+#> 10      10  7.554338 downstream        21.2  6.99
 #> # ℹ 40 more rows
 ```
 
@@ -217,14 +254,14 @@ nrow(complete)
 #> [1] 35
 head(complete)
 #> # A tibble: 6 × 5
-#>   site_id       do site_type  temperature    ph
-#>     <int> <inf_na> <chr>            <dbl> <dbl>
-#> 1       1 7.439524 downstream        16.1  7.21
-#> 2       2 7.769823 upstream          13.5  7.80
-#> 3       3 9.558708 upstream          14.0  6.69
-#> 4       4 8.070508 upstream          11.9  7.47
-#> 5       5 8.129288 upstream          11.8  7.76
-#> 6       6 9.715065 downstream        15.9  7.65
+#>   site_id        do site_type  temperature    ph
+#>     <int> <why_dbl> <chr>            <dbl> <dbl>
+#> 1       1  7.439524 downstream        16.1  7.21
+#> 2       2  7.769823 upstream          13.5  7.80
+#> 3       3  9.558708 upstream          14.0  6.69
+#> 4       4  8.070508 upstream          11.9  7.47
+#> 5       5  8.129288 upstream          11.8  7.76
+#> 6       6  9.715065 downstream        15.9  7.65
 ```
 
 ## API Reference
@@ -236,7 +273,7 @@ missingness if `type` omitted.
 
 ``` r
 why_na(c(1.5, NA, 2.3))
-#> <informative_na[3]>
+#> <informative_na<double>[3]>
 #> [1] 1.5       <NA:MCAR> 2.3
 ```
 
@@ -300,7 +337,7 @@ pass through as observed.
 raw <- c("12.5", "-9999", "LOD", "15.1")
 x <- sentinel_recode(raw, list("-9999" = "MAR", "LOD" = "MNAR"))
 x
-#> <informative_na[4]>
+#> <informative_na<double>[4]>
 #> [1] 12.5      <NA:MAR>  <NA:MNAR> 15.1
 ```
 
@@ -319,7 +356,7 @@ missing as `<NA:MCAR>`, etc.
 x <- why_na(c(1.5, NA), c(0L, 1L))
 y <- c(3.1, 4.2)
 c(x, y)
-#> <informative_na[4]>
+#> <informative_na<double>[4]>
 #> [1] 1.5       <NA:MCAR> 3.1       4.2
 ```
 
@@ -334,7 +371,10 @@ as.double(x)
 ## Design Notes
 
 - **Immutability of types**: When `type != 0L`, the `value` field is
-  always `NA_real_`.
+  always `NA` of the appropriate type (e.g., `NA_integer_` for integer
+  vectors, `NA_character_` for character, `<NA>` for factors).
+- **Type preservation**: Input type is preserved in `why_na()`. Use the
+  optional `ptype` argument for explicit casting.
 - **vctrs foundation**: Built on `vctrs::new_rcrd()` for integration
   with tidyverse (dplyr, tibble).
 - **No arithmetic**: Operations like `x + 1` return standard `NA` (not

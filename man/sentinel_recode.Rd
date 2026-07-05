@@ -4,7 +4,7 @@
 \alias{sentinel_recode}
 \title{Recode sentinel codes to whyna vector}
 \usage{
-sentinel_recode(x, map)
+sentinel_recode(x, map, ptype = double())
 }
 \arguments{
 \item{x}{A character or numeric vector containing raw data with sentinel codes.}
@@ -12,13 +12,17 @@ sentinel_recode(x, map)
 \item{map}{A named list mapping sentinel strings to mechanism types.
 Values must be "MCAR", "MAR", or "MNAR".
 Example: \code{list("-9999" = "MAR", "LOD" = "MNAR", "NULL-broken" = "MCAR")}.}
+
+\item{ptype}{A prototype vector. Non-sentinel values in \code{x} are cast to this type.
+Default is \code{double()} for backward compatibility; use \code{integer()}, \code{character()},
+or \code{as.Date(NA)} for other types.}
 }
 \value{
 A informative_na vector.
 }
 \description{
 Maps domain-specific sentinel codes (e.g., "-9999", "LOD", "Null-broken") to
-a informative_na vector. Numeric values pass through as observed.
+a informative_na vector. Non-sentinel values are parsed via \code{ptype}.
 }
 \examples{
 raw <- c("12.5", "-9999", "LOD", "15.1", "NULL-broken")

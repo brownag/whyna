@@ -98,12 +98,15 @@ missing_summary <- function(x) {
 #' Recode sentinel codes to whyna vector
 #'
 #' Maps domain-specific sentinel codes (e.g., "-9999", "LOD", "Null-broken") to
-#' a informative_na vector. Numeric values pass through as observed.
+#' a informative_na vector. Non-sentinel values are parsed via `ptype`.
 #'
 #' @param x A character or numeric vector containing raw data with sentinel codes.
 #' @param map A named list mapping sentinel strings to mechanism types.
 #'   Values must be "MCAR", "MAR", or "MNAR".
 #'   Example: `list("-9999" = "MAR", "LOD" = "MNAR", "NULL-broken" = "MCAR")`.
+#' @param ptype A prototype vector. Non-sentinel values in `x` are cast to this type.
+#'   Default is `double()` for backward compatibility; use `integer()`, `character()`,
+#'   or `as.Date(NA)` for other types.
 #'
 #' @return A informative_na vector.
 #'
@@ -114,12 +117,12 @@ missing_summary <- function(x) {
 #' missing_summary(x)
 #'
 #' @export
-sentinel_recode <- function(x, map) {
+sentinel_recode <- function(x, map, ptype = double()) {
   type_lookup <- c("MCAR" = 1L, "MAR" = 2L, "MNAR" = 3L)
   x_chr <- as.character(x)
-  values <- suppressWarnings(as.double(x_chr))
   types <- rep(0L, length(x_chr))
 
+  # Mark sentinel positions
   for (sentinel in names(map)) {
     hit <- x_chr == sentinel
     mech <- map[[sentinel]]
@@ -127,6 +130,18 @@ sentinel_recode <- function(x, map) {
       rlang::abort(paste0("Unknown mechanism '", mech, "'. Must be MCAR, MAR, or MNAR."))
     }
     types[hit] <- type_lookup[[mech]]
+  }
+
+  # Parse non-sentinel values using ptype
+  if (identical(ptype, double())) {
+    # Backward-compatible behavior for double
+    values <- suppressWarnings(as.double(x_chr))
+  } else if (identical(ptype, integer())) {
+    # Lenient behavior for integer
+    values <- suppressWarnings(as.integer(x_chr))
+  } else {
+    # For other types, use vec_cast
+    values <- vctrs::vec_cast(x_chr, to = ptype)
   }
 
   new_informative_na(value = values, type = types)

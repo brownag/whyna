@@ -39,13 +39,12 @@ test_that("c() with character errors", {
   )
 })
 
-test_that("c() with logical errors", {
+test_that("c() with logical promotes to double", {
   x <- why_na(c(1.5, 2.3), c(0L, 1L))
   y <- c(TRUE, FALSE)
-  expect_error(
-    c(x, y),
-    class = "vctrs_error_incompatible_type"
-  )
+  result <- c(x, y)
+  expect_s3_class(result, "informative_na")
+  expect_equal(typeof(vctrs::field(result, "value")), "double")
 })
 
 test_that("[subsetting preserves class", {
