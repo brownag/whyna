@@ -8,21 +8,25 @@
 \usage{
 new_informative_na(value = double(), type = integer())
 
-why_na(x, type = NULL)
+why_na(x, type = NULL, ptype = NULL)
 }
 \arguments{
-\item{value}{A double vector of values. Will be coerced to double.}
+\item{value}{A vector of values. Supported types: logical, integer, double,
+character, complex, Date, POSIXct, difftime, factor. Will coerce to double if omitted.}
 
 \item{type}{An integer vector indicating missingness type.
 0L = Observed, 1L = MCAR, 2L = MAR, 3L = MNAR.}
 
-\item{x}{A vector to coerce to double (or NULL).}
+\item{x}{A vector (optional). If omitted, returns an empty double whyna.
+Type is preserved; use \code{ptype} for explicit casting.}
+
+\item{ptype}{A prototype vector. If provided, \code{x} is cast to this type before construction.}
 }
 \value{
 A vctrs_rcrd of class informative_na.
 }
 \description{
 Low-level constructor that creates a vctrs record with value and type fields.
-Enforces immutability: values with type != 0L are forced to NA_real_.
+Enforces immutability: values with type != 0L are forced to their type's NA.
 }
 \keyword{internal}

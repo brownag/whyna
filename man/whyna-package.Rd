@@ -9,7 +9,7 @@
 Implements typed/informative missingness following Rubin's MCAR/MAR/MNAR framework. Tracks why values are missing using a vctrs record vector with 'value' and 'type' fields. Integrates cleanly with tibble, dplyr, and base R idioms.
 }
 \author{
-\strong{Maintainer}: Andrew Brown \email{brown.andrewg@gmail.com}
+\strong{Maintainer}: Andrew Brown \email{brown.andrewg@gmail.com} (\href{https://orcid.org/0000-0002-4565-533X}{ORCID})
 
 }
 \keyword{internal}

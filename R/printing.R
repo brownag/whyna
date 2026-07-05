@@ -23,12 +23,16 @@ format.informative_na <- function(x, ...) {
 #' @keywords internal
 #' @export
 vec_ptype_abbr.informative_na <- function(x, ...) {
-  "inf_na"
+  val_ptype <- vctrs::field(x, "value")
+  val_abbr <- vctrs::vec_ptype_abbr(val_ptype, ...)
+  paste0("why_", val_abbr)
 }
 
 #' @rdname format.informative_na
 #' @keywords internal
 #' @export
 vec_ptype_full.informative_na <- function(x, ...) {
-  "informative_na"
+  val_ptype <- vctrs::field(x, "value")
+  val_full <- vctrs::vec_ptype_full(val_ptype, ...)
+  paste0("informative_na<", val_full, ">")
 }
